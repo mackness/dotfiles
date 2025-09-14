@@ -107,9 +107,9 @@ source $ZSH/oh-my-zsh.sh
 alias c=chezmoi
 
 # Configure tmux
-if [ -z "$TMUX" ] && [ "$INTEGRATED_TERMINAL" != "true" ]; then
-    tmux attach -t main || tmux new -s main
-fi
+# if [ -z "$TMUX" ] && [ "$INTEGRATED_TERMINAL" != "true" ]; then
+#    tmux attach -t main || tmux new -s main
+# fi
 
 # Configure FZF
 source <(fzf --zsh)
@@ -118,7 +118,7 @@ source <(fzf --zsh)
 export FZF_CTRL_R_OPTS="
   --bind 'ctrl-y:execute-silent(echo -n {2..} | pbcopy)+abort'
   --color header:italic
-  --header 'Press CTRL-Y to copy command into clipboard'"
+  --hdeader 'Press CTRL-Y to copy command into clipboard'"
 
 # Preview file content using bat (https://github.com/sharkdp/bat)
 export FZF_CTRL_T_OPTS="
@@ -141,30 +141,82 @@ go() {
   fi
 }
 
-gho() {
+# Use fzf to select and checkout a git branch, sorted by recent activity
+gbc() {
+  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: Not in a git repository"
+    return 1
+  fi
+  
+  local branch
+  branch=$(git for-each-ref --format='%(refname:short) %(committerdate:relative)' --sort=-committerdate refs/heads/ | \
+    fzf --height=40% --reverse --prompt="Checkout branch: " --preview="git log --oneline --graph --color=always {1}" | \
+    awk '{print $1}')
+  
+  if [[ -n "$branch" ]]; then
+    git checkout "$branch"
+  fi
+}
+
+# open the current directory in intellij
+idea() {
+  open -na "IntelliJ IDEA.app" --args "$@"
+}
+
+# Open current git branch in a new browser window using gh cli
+ghb() {
   if ! git rev-parse --git-dir > /dev/null 2>&1; then
     echo "Error: Not in a git repository"
     return 1
   fi
   
   local branch=$(git branch --show-current)
-  local remote_url=$(git remote get-url origin 2>/dev/null)
-  
-  if [[ -z "$remote_url" ]]; then
-    echo "Error: No remote origin found"
+  if [[ -z "$branch" ]]; then
+    echo "Error: Could not determine current branch"
     return 1
   fi
   
-  # Convert SSH URL to HTTPS if needed
-  if [[ "$remote_url" =~ ^git@github\.com: ]]; then
-    remote_url=$(echo "$remote_url" | sed 's/git@github\.com:/https:\/\/github.com\//' | sed 's/\.git$//')
-  elif [[ "$remote_url" =~ ^https://github\.com/ ]]; then
-    remote_url=$(echo "$remote_url" | sed 's/\.git$//')
+  echo "Opening branch '$branch' in new window..."
+  gh browse --branch "$branch"
+}
+
+# Git stash management with fzf - list, preview, apply, or drop stashes
+gsf() {
+  if ! git rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: Not in a git repository"
+    return 1
   fi
   
-  local repo_url="${remote_url}/tree/${branch}"
-  echo "Opening: $repo_url"
-  gh browse --branch "$branch"
+  local stashes
+  stashes=$(git stash list --format="%gd: %gs (%cr)" 2>/dev/null)
+  
+  if [[ -z "$stashes" ]]; then
+    echo "No stashes found"
+    return 0
+  fi
+  
+  local selected
+  selected=$(echo "$stashes" | \
+    fzf --height=40% --reverse --prompt="Stash action: " \
+        --preview="git stash show -p {1} --color=always" \
+        --header="Enter=apply, Ctrl-D=drop, Ctrl-P=pop, Esc=cancel" \
+        --bind="ctrl-d:execute(git stash drop {1})+reload(git stash list --format='%gd: %gs (%cr)')" \
+        --bind="ctrl-p:accept" \
+        --expect="ctrl-p")
+  
+  if [[ -n "$selected" ]]; then
+    local key=$(echo "$selected" | head -1)
+    local stash=$(echo "$selected" | tail -1 | awk '{print $1}')
+    
+    case "$key" in
+      "ctrl-p")
+        git stash pop "$stash"
+        ;;
+      *)
+        git stash apply "$stash"
+        ;;
+    esac
+  fi
 }
 
 # Environment Exports
@@ -172,10 +224,17 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+{{ if .isWork }}
+export GH_TOKEN="{{ onepasswordRead "op://Employee/ZSH GitHub Token/password" }}"
+{{ else }}
+export GH_TOKEN="{{ onepasswordRead "op://Personal/ZSH GitHub Token/password" }}"
+{{ end  }}
+
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
-export GH_TOKEN="{{ onepasswordRead "op://Personal/ZSH GitHub Token/password" }}"
+# Automatically set JAVA_HOME with SDKMAN!
+export JAVA_HOME=~/.sdkman/candidates/java/current
 
-
+export PATH="$JAVA_HOME/bin:$HOME/.local/bin:$PATH"

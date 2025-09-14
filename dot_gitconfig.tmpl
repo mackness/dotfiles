@@ -14,11 +14,14 @@
     # Automatically rebase local commits on top of the fetched branch before merging
     rebase = true
 
+[push]
+    autoSetupRemote = true
+
 [alias]
     # --- Workflow Aliases ---
     
     # Status and Staging
-    st = status -sb
+    s = status
     add = add .
     unstage = reset HEAD --
 

@@ -1,2 +1,1 @@
 . "$HOME/.cargo/env"
-export EDITOR="cursor --wait --new-window"

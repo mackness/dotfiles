@@ -3,6 +3,8 @@
 
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.rd/bin:$PATH"
+export PATH="/opt/homebrew/opt/ruby/bin:$PATH"
+export PATH="/opt/homebrew/lib/ruby/gems/4.0.0/bin:$PATH"
 
 # Path to your Oh My Zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
@@ -106,10 +108,11 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 alias c=chezmoi
+alias mux=tmuxinator
 
 # Configure tmux
 if [ -z "$TMUX" ] && [ "$INTEGRATED_TERMINAL" != "true" ] && [ "$TERM_PROGRAM" != "vscode" ]; then
-    tmux new-session
+    mux start default -n "default-$(date +%s)"
 fi
 
 # Configure FZF
@@ -279,6 +282,11 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
+export PATH="$PATH:/Users/msolomon1/Library/Application Support/Coursier/bin"
+export PATH="$JAVA_HOME/bin:$HOME/.local/bin:$PATH"
+
 {{ if .isWork }}
 export GH_TOKEN="{{ onepasswordRead "op://Employee/ZSH GitHub Token/password" }}"
 export GITHUB_TOKEN="{{ onepasswordRead "op://Employee/ZSH GitHub Token/password" }}"
@@ -290,19 +298,9 @@ export ANTHROPIC_BASE_URL="https://ai-gateway.aitools.creditkarma.com/anthropic"
 export CIRCLE_OAUTH_TOKEN="{{ onepasswordRead "op://Employee/CircleCI OAuth Token/password" }}"
 {{ else }}
 export GH_TOKEN="{{ onepasswordRead "op://Personal/ZSH GitHub Token/password" }}"
-{{ end  }}
-
-export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
-export PATH="$PATH:/Users/msolomon1/Library/Application Support/Coursier/bin"
-
-export PATH="$JAVA_HOME/bin:$HOME/.local/bin:$PATH"
-
-{{ if not .isWork }}
 # bun completions
 [ -s "/Users/solomon/.bun/_bun" ] && source "/Users/solomon/.bun/_bun"
-
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
-{{ end }}
+{{ end  }}

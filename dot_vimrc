@@ -102,3 +102,5 @@ set laststatus=2
 " This can be helpful for beginners but many advanced users disable it.
 set mouse=a
 
+set clipboard=unnamed
+

@@ -1,0 +1,10 @@
+name: <%= @args[0] ? "claude-#{File.basename(File.expand_path(@args[0]))}" : "claude" %>
+root: <%= @args[0] ? File.expand_path(@args[0]) : Dir.pwd %>
+
+windows:
+  - workspace:
+      layout: main-horizontal
+      panes:
+        - claude
+        - claude
+        - claude

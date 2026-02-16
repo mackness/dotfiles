@@ -1,0 +1,10 @@
+name: coding
+root: <%= @args[0] || "." %>
+
+windows:
+  - workspace:
+      layout: main-horizontal
+      panes:
+        - # main pane (top, full width)
+        - # bottom-left
+        - # bottom-right

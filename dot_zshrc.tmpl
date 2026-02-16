@@ -111,8 +111,8 @@ alias c=chezmoi
 alias mux=tmuxinator
 
 # Configure tmux
-if [ -z "$TMUX" ] && [ "$INTEGRATED_TERMINAL" != "true" ] && [ "$TERM_PROGRAM" != "vscode" ]; then
-    mux start default -n "default-$(date +%s)"
+if [ -t 0 ] && [ -z "$TMUX" ] && [ "$INTEGRATED_TERMINAL" != "true" ] && [ "$TERM_PROGRAM" != "vscode" ]; then
+    tmux new-session -s "default-$(date +%s)" -c ~/dev
 fi
 
 # Configure FZF

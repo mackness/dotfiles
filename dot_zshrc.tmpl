@@ -13,7 +13,7 @@ export ZSH="$HOME/.oh-my-zsh"
 # load a random theme each time Oh My Zsh is loaded, in which case,
 # to know which specific one was loaded, run: echo $RANDOM_THEME
 # See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
-ZSH_THEME="robbyrussell"
+ZSH_THEME=""
 
 # Set list of themes to pick from when loading at random
 # Setting this variable when ZSH_THEME=random will cause zsh to load
@@ -76,6 +76,10 @@ ZSH_THEME="robbyrussell"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git zsh-autosuggestions zsh-syntax-highlighting)
 
+# Skip compinit verification on startup (saves ~280ms)
+ZSH_DISABLE_COMPFIX=true
+DISABLE_UPDATE_PROMPT=true
+
 source $ZSH/oh-my-zsh.sh
 
 # User configuration
@@ -115,6 +119,16 @@ if [ -t 0 ] && [ -z "$TMUX" ] && [ "$INTEGRATED_TERMINAL" != "true" ] && [ "$TER
     tmux new-session -s "default-$(date +%s)" -c ~/dev
 fi
 
+# Set iTerm tab title to the active git worktree name
+_set_iterm_tab_title_to_worktree() {
+  local wt_path
+  wt_path=$(git rev-parse --show-toplevel 2>/dev/null) || return
+  local dir_name="${wt_path##*/}"
+  # Only override the title inside worktree repos
+  [[ "$wt_path" == */dev/*-worktree/* ]] && print -Pn "\e]2;${dir_name}\a"
+}
+precmd_functions+=(_set_iterm_tab_title_to_worktree)
+
 # Configure FZF
 source <(fzf --zsh)
 
@@ -142,6 +156,70 @@ go() {
   dir=$(find ~/dev -mindepth 1 -maxdepth 1 -type d | fzf --height=40% --reverse --prompt="~/dev: ")
   if [[ -n "$dir" ]]; then
     cd "$dir" || echo "Failed to cd into $dir"
+  fi
+}
+
+# Create a git worktree with a new branch and open a tmux workspace
+workspace() {
+  if [[ $# -lt 3 ]]; then
+    echo "Usage: workspace <repo> <worktree-name> <branch-name>"
+    return 1
+  fi
+
+  local repo="$1"
+  local wt_name="$2"
+  local branch="$3"
+  local repo_dir="$HOME/dev/$repo"
+  local worktree_dir="$repo_dir/$wt_name"
+
+  if [[ ! -d "$repo_dir" ]]; then
+    echo "Error: Repository not found: $repo_dir"
+    return 1
+  fi
+
+  if ! git -C "$repo_dir" rev-parse --git-dir > /dev/null 2>&1; then
+    echo "Error: Not a git repository: $repo_dir"
+    return 1
+  fi
+
+  # If worktree already exists, just launch the workspace
+  if [[ -d "$worktree_dir" ]]; then
+    echo "Worktree already exists, launching workspace..."
+    tmuxinator start worktree "$worktree_dir"
+    return 0
+  fi
+
+  echo "Creating worktree '$wt_name' (branch: $branch) in $repo_dir"
+  if ! git -C "$repo_dir" worktree add "$worktree_dir" -b "$branch"; then
+    echo "Error: Failed to create worktree"
+    return 1
+  fi
+
+  tmuxinator start worktree "$worktree_dir"
+}
+
+# List all worktree workspaces in a categorized fzf picker and launch the selected one
+workspaces() {
+  local selected
+  selected=$(
+    for repo_dir in ~/dev/*-worktree; do
+      [[ -d "$repo_dir" ]] || continue
+      local repo_name="${repo_dir##*/}"
+      repo_name="${repo_name%-worktree}"
+      for wt in "$repo_dir"/*/; do
+        [[ -d "$wt" ]] || continue
+        local wt_name="${wt%/}"
+        wt_name="${wt_name##*/}"
+        echo "$repo_name/$wt_name"
+      done
+    done | fzf --height=40% --reverse --prompt="Workspace: "
+  )
+
+  if [[ -n "$selected" ]]; then
+    local repo="${selected%%/*}"
+    local wt="${selected#*/}"
+    local target="$HOME/dev/${repo}-worktree/$wt"
+    cd "$target" && mux workspace .
   fi
 }
 
@@ -276,14 +354,43 @@ function ds() {
     docker stop $(docker ps -q) && docker rm $(docker ps -aq)
 }
 
+function clone() {
+   git clone https://code.corp.creditkarma.com/ck-private/"$@"
+}
+
 # Environment Exports
 
+# Lazy-load nvm (saves ~900ms on shell startup)
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+# Put nvm's default node on PATH so starship detects the version without loading nvm
+NVM_DEFAULT=$(cat "$NVM_DIR/alias/default" 2>/dev/null)
+if [[ -n "$NVM_DEFAULT" && -d "$NVM_DIR/versions/node/$NVM_DEFAULT/bin" ]]; then
+  export PATH="$NVM_DIR/versions/node/$NVM_DEFAULT/bin:$PATH"
+elif [[ -n "$NVM_DEFAULT" ]]; then
+  # Handle partial version aliases (e.g. "20" -> find matching installed version)
+  NVM_MATCH=$(ls -d "$NVM_DIR/versions/node/$NVM_DEFAULT"*/bin 2>/dev/null | sort -V | tail -1)
+  [[ -n "$NVM_MATCH" ]] && export PATH="$NVM_MATCH:$PATH"
+fi
+unset NVM_DEFAULT NVM_MATCH
+nvm() {
+  unset -f nvm node npm npx
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+  nvm "$@"
+}
+node() { unset -f nvm node npm npx; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; node "$@"; }
+npm() { unset -f nvm node npm npx; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; npm "$@"; }
+npx() { unset -f nvm node npm npx; [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"; npx "$@"; }
 
+# Lazy-load jenv (saves ~200ms on shell startup)
 export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
+jenv() {
+  unset -f jenv
+  eval "$(command jenv init -)"
+  export JAVA_HOME="$(jenv prefix 2>/dev/null)"
+  jenv "$@"
+}
+export JAVA_HOME="$HOME/.jenv/versions/$(cat "$HOME/.jenv/version" 2>/dev/null || echo "")"
 export PATH="$PATH:/Users/msolomon1/Library/Application Support/Coursier/bin"
 export PATH="$JAVA_HOME/bin:$HOME/.local/bin:$PATH"
 
@@ -295,7 +402,7 @@ export ANTHROPIC_AUTH_TOKEN="{{ onepasswordRead "op://Employee/AI Gateway Token/
 export AI_GATEWAY_TOKEN="{{ onepasswordRead "op://Employee/AI Gateway Token GSA/password" }}"
 export NEW_RELIC_OBS_NRTF_TOKEN="{{ onepasswordRead "op://Employee/Obs Nrtf Token/password" }}"
 export ANTHROPIC_BASE_URL="https://ai-gateway.aitools.creditkarma.com/anthropic"
-export CIRCLE_OAUTH_TOKEN="{{ onepasswordRead "op://Employee/CircleCI OAuth Token/password" }}"
+#export CIRCLE_OAUTH_TOKEN="{{ onepasswordRead "op://Employee/CircleCI OAuth Token/password" }}"
 {{ else }}
 export GH_TOKEN="{{ onepasswordRead "op://Personal/ZSH GitHub Token/password" }}"
 # bun completions
@@ -304,3 +411,6 @@ export GH_TOKEN="{{ onepasswordRead "op://Personal/ZSH GitHub Token/password" }}
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
 {{ end  }}
+
+# Starship prompt
+eval "$(starship init zsh)"

@@ -605,7 +605,7 @@ require('lazy').setup({
       local servers = {
         -- clangd = {},
         -- gopls = {},
-        -- pyright = {},
+        pyright = {},
         -- rust_analyzer is installed via rustup, not Mason (see config below)
 
         vtsls = {},
@@ -622,6 +622,7 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'lua-language-server', -- Lua Language server
         'stylua', -- Used to format Lua code
+        'typos-lsp', -- Spell checking LSP (Mason name differs from lspconfig name)
         -- You can add other tools here that you want Mason to install
       })
 
@@ -632,6 +633,10 @@ require('lazy').setup({
         vim.lsp.config(name, server)
         vim.lsp.enable(name)
       end
+
+      -- typos_lsp: Mason name is "typos-lsp" so it's installed via ensure_installed above
+      vim.lsp.config('typos_lsp', { capabilities = capabilities })
+      vim.lsp.enable('typos_lsp')
 
       -- Special Lua Config, as recommended by neovim help docs
       vim.lsp.config('lua_ls', {
@@ -887,7 +892,7 @@ require('lazy').setup({
   -- require 'kickstart.plugins.lint',
   -- require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   {
     'sindrets/diffview.nvim',

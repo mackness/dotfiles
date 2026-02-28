@@ -1,0 +1,85 @@
+[user]
+    name = {{ .name }}
+    email = {{ .email }}
+
+[core]
+    # Set your preferred text editor for writing commit messages, rebasing, etc.
+    editor = vim 
+    
+[init]
+    # Set the default name for the initial branch when creating a new repository
+    defaultBranch = main
+
+[pull]
+    # Automatically rebase local commits on top of the fetched branch before merging
+    rebase = true
+
+[push]
+    autoSetupRemote = true
+
+[alias]
+    # --- Workflow Aliases ---
+    
+    # Status and Staging
+    s = status
+    add = add .
+    unstage = reset HEAD --
+
+    # Quick commit with default message
+    cmd = !git add . && git commit -m "change"
+    
+    # Committing
+    ci = commit
+    amend = commit --amend --no-edit
+
+    # Branching and Checkout
+    co = checkout
+    br = branch
+    new = checkout -b
+    del = branch -d
+    
+    # Fetching and Pruning
+    pu = push
+    pl = pull
+    prune = remote prune origin
+    
+    # Interactive commands
+    addp = add --patch
+    checkoutp = checkout --patch
+    diffp = diff --patch
+    
+    # Rebase
+    reb = rebase
+    rebi = rebase -i
+    
+    # Stashing
+    stash-save = stash push -u
+    pop = stash pop
+    
+    # Restoring Files (using 'restore' which is the modern 'checkout --')
+    restore = checkout --
+    
+    # --- History and Log Aliases ---
+    
+    # A cleaner, more compact log
+    lg = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
+    
+    # A standard detailed log
+    log = log --oneline --decorate --graph --all
+    
+    # Show the last commit
+    last = log -1 HEAD
+    
+    # --- Utility Aliases ---
+    
+    # Show all files tracked by Git
+    ls = ls-files
+    
+    # Show untracked files
+    untracked = ls-files -o --exclude-standard
+    
+    # Show a list of all current aliases
+    alias = !git config --get-regexp alias
+
+    acm = !git add -A && git commit -m
+    ca = !git add . && git commit --amend --no-edit

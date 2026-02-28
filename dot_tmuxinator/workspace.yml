@@ -1,0 +1,10 @@
+name: <%= @args[0] ? "wt-#{File.basename(File.expand_path(@args[0]))}" : "worktree" %>
+root: <%= @args[0] ? File.expand_path(@args[0]) : Dir.pwd %>
+
+windows:
+  - workspace:
+      layout: main-horizontal
+      panes:
+        - nvim .
+        - claude
+        -

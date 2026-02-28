@@ -1,0 +1,56 @@
+
+[general]
+import = [
+    "~/.config/alacritty/themes/themes/tokyo_night.toml"
+]
+
+# Make links clickable
+[[hints.enabled]]
+ command        = "open"
+hyperlinks      = true
+post_processing = true
+persist         = false
+mouse.enabled   = true
+mouse.mods      = "Control" # "Control|Shift" is my preference
+binding         = { key = "O", mods = "Control|Shift" }
+regex           = "(ipfs:|ipns:|magnet:|mailto:|gemini://|go‐pher://|https://|http://|news:|file:|git://|ssh:|ftp://)[^\u0000-\u001F\u007F-\u009F<>\"\\s{-}\\^⟨⟩`]+"
+
+[font]
+# Font size in points.
+size = 14.0
+
+# The normal (default) font style.
+[font.normal]
+# The name of the font family.
+family = "JetBrainsMono Nerd Font"
+# The font style.
+style = "Regular"
+
+# The bold font style.
+# If the family is not specified, it will fall back to the normal font family.
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Bold"
+
+# The italic font style.
+# If the family is not specified, it will fall back to the normal font family.
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Italic"
+
+# The bold and italic font style.
+# If the family is not specified, it will fall back to the normal font family.
+[font.bold_italic]
+family = "JetBrainsMono Nerd Font"
+style = "Bold Italic"
+
+# Additional space around characters.
+[font.offset]
+x = 0
+y = 1
+
+# Offset of the glyphs within their cells.
+[font.glyph_offset]
+x = 0
+y = 0
+

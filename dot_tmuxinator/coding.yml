@@ -1,0 +1,10 @@
+name: <%= @args[0] ? File.basename(File.expand_path(@args[0])) : "coding" %>
+root: <%= @args[0] ? File.expand_path(@args[0]) : Dir.pwd %>
+
+windows:
+  - workspace:
+      layout: main-horizontal
+      panes:
+        - # main pane (top, full width)
+        - # bottom-left
+        - # bottom-right

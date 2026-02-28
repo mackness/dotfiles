@@ -22,26 +22,26 @@ size = 14.0
 # The normal (default) font style.
 [font.normal]
 # The name of the font family.
-family = "MonoLisa"
+family = "JetBrains NerdFont" 
 # The font style.
 style = "Regular"
 
 # The bold font style.
 # If the family is not specified, it will fall back to the normal font family.
 [font.bold]
-family = "MonoLisa"
+family = "JetBrains NerdFont"
 style = "Bold"
 
 # The italic font style.
 # If the family is not specified, it will fall back to the normal font family.
 [font.italic]
-family = "MonoLisa"
+family = "JetBrains NerdFont" 
 style = "Italic"
 
 # The bold and italic font style.
 # If the family is not specified, it will fall back to the normal font family.
 [font.bold_italic]
-family = "MonoLisa"
+family = "JetBrains NerdFont"
 style = "Bold Italic"
 
 # Additional space around characters.

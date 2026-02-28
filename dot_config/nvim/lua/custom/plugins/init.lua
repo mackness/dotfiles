@@ -11,6 +11,11 @@ return {
   },
 
   {
+    'mg979/vim-visual-multi',
+    branch = 'master',
+  },
+
+  {
     'romgrk/barbar.nvim',
     dependencies = {
       'lewis6991/gitsigns.nvim',

@@ -394,13 +394,5 @@ export JAVA_HOME="$HOME/.jenv/versions/$(cat "$HOME/.jenv/version" 2>/dev/null |
 export PATH="$PATH:/Users/msolomon1/Library/Application Support/Coursier/bin"
 export PATH="$JAVA_HOME/bin:$HOME/.local/bin:$PATH"
 
-{{ if not .isWork }}
-# bun completions
-[ -s "/Users/solomon/.bun/_bun" ] && source "/Users/solomon/.bun/_bun"
-# bun
-export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
-{{ end  }}
-
 # Starship prompt
 eval "$(starship init zsh)"

@@ -22,26 +22,26 @@ size = 14.0
 # The normal (default) font style.
 [font.normal]
 # The name of the font family.
-family = "JetBrains Mono" 
+family = "JetBrainsMono Nerd Font"
 # The font style.
 style = "Regular"
 
 # The bold font style.
 # If the family is not specified, it will fall back to the normal font family.
 [font.bold]
-family = "JetBrains Mono"
+family = "JetBrainsMono Nerd Font"
 style = "Bold"
 
 # The italic font style.
 # If the family is not specified, it will fall back to the normal font family.
 [font.italic]
-family = "JetBrains Mono" 
+family = "JetBrainsMono Nerd Font"
 style = "Italic"
 
 # The bold and italic font style.
 # If the family is not specified, it will fall back to the normal font family.
 [font.bold_italic]
-family = "JetBrains Mono"
+family = "JetBrainsMono Nerd Font"
 style = "Bold Italic"
 
 # Additional space around characters.

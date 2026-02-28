@@ -394,17 +394,7 @@ export JAVA_HOME="$HOME/.jenv/versions/$(cat "$HOME/.jenv/version" 2>/dev/null |
 export PATH="$PATH:/Users/msolomon1/Library/Application Support/Coursier/bin"
 export PATH="$JAVA_HOME/bin:$HOME/.local/bin:$PATH"
 
-{{ if .isWork }}
-export GH_TOKEN="{{ onepasswordRead "op://Employee/ZSH GitHub Token/password" }}"
-export GITHUB_TOKEN="{{ onepasswordRead "op://Employee/ZSH GitHub Token/password" }}"
-#export ANTHROPIC_API_KEY="{{ onepasswordRead "op://Employee/AI Gateway Token/password" }}"
-export ANTHROPIC_AUTH_TOKEN="{{ onepasswordRead "op://Employee/AI Gateway Token/password" }}"
-export AI_GATEWAY_TOKEN="{{ onepasswordRead "op://Employee/AI Gateway Token GSA/password" }}"
-export NEW_RELIC_OBS_NRTF_TOKEN="{{ onepasswordRead "op://Employee/Obs Nrtf Token/password" }}"
-export ANTHROPIC_BASE_URL="https://ai-gateway.aitools.creditkarma.com/anthropic"
-#export CIRCLE_OAUTH_TOKEN="{{ onepasswordRead "op://Employee/CircleCI OAuth Token/password" }}"
-{{ else }}
-export GH_TOKEN="{{ onepasswordRead "op://Personal/ZSH GitHub Token/password" }}"
+{{ if not .isWork }}
 # bun completions
 [ -s "/Users/solomon/.bun/_bun" ] && source "/Users/solomon/.bun/_bun"
 # bun

@@ -1,4 +1,4 @@
-name: <%= @args[0] ? File.basename(File.expand_path(@args[0])) : "coding" %>
+name: <%= @args[1] || (@args[0] ? File.basename(File.expand_path(@args[0])) : "coding") %>
 root: <%= @args[0] ? File.expand_path(@args[0]) : Dir.pwd %>
 
 windows:

@@ -394,5 +394,15 @@ export JAVA_HOME="$HOME/.jenv/versions/$(cat "$HOME/.jenv/version" 2>/dev/null |
 export PATH="$PATH:/Users/msolomon1/Library/Application Support/Coursier/bin"
 export PATH="$JAVA_HOME/bin:$HOME/.local/bin:$PATH"
 
+# Start a tmuxinator coding session for the current directory without hijacking other windows
+coding() {
+  local name="$(basename "$PWD")"
+  mux start coding .
+  tmux switch-client -t "$name"
+}
+
+# Don't print % for partial lines (avoids % appearing at top of new tmux panes)
+unsetopt PROMPT_SP
+
 # Starship prompt
 eval "$(starship init zsh)"

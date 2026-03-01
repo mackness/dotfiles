@@ -1,0 +1,17 @@
+#!/bin/bash
+set -euo pipefail
+
+{{ if eq .chezmoi.os "darwin" -}}
+
+echo "Starting yabai..."
+yabai --start-service || true
+
+echo "Starting skhd..."
+skhd --start-service || true
+
+echo ""
+echo "Window manager services started."
+echo "Grant Accessibility permissions in:"
+echo "  System Settings > Privacy & Security > Accessibility"
+
+{{ end -}}

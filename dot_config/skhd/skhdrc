@@ -1,0 +1,38 @@
+# skhd hotkey configuration
+# Modifier: alt (option key)
+
+# ── Core Operations ───────────────────────────────────────────────────────────
+# Maximize focused window (toggles native fullscreen)
+alt - m : yabai -m window --toggle zoom-fullscreen
+
+# Equalize: redistribute all windows in the space to equal 50/50 ratios
+alt - e : yabai -m space --balance
+
+# Toggle split direction for the focused window (horizontal ↔ vertical)
+# In BSP, this controls whether the next window splits left/right or top/bottom
+alt - s : yabai -m window --toggle split
+
+# ── Focus ─────────────────────────────────────────────────────────────────────
+alt - left  : yabai -m window --focus west
+alt - right : yabai -m window --focus east
+alt - up    : yabai -m window --focus north
+alt - down  : yabai -m window --focus south
+
+# ── Move / Swap ───────────────────────────────────────────────────────────────
+alt + shift - left  : yabai -m window --swap west
+alt + shift - right : yabai -m window --swap east
+alt + shift - up    : yabai -m window --swap north
+alt + shift - down  : yabai -m window --swap south
+
+# ── Layout ────────────────────────────────────────────────────────────────────
+# Rotate all windows clockwise in the current space
+alt - r : yabai -m space --rotate 90
+
+# Toggle float for focused window, centered 50% of screen
+alt - t : yabai -m window --toggle float --grid 4:4:1:1:2:2
+
+# Toggle float focused window, centered at 75% width, full height
+alt - c : yabai -m window --toggle float --grid 1:8:1:0:6:1
+
+# ── Service ───────────────────────────────────────────────────────────────────
+alt + shift - r : yabai --restart-service

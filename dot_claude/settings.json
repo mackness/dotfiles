@@ -105,6 +105,7 @@
       "Bash(./gradlew:*)",
       "Bash(mvn:*)",
       "Bash(./mvnw:*)",
+      "Bash(sbt:*)",
       "Bash(go build:*)",
       "Bash(go test:*)",
       "Bash(go vet:*)",

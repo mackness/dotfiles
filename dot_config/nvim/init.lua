@@ -417,6 +417,7 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
       vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
       vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+      vim.keymap.set('n', '<leader>fr', builtin.oldfiles, { desc = '[F]ind [R]ecent files' })
       vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
       vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
 
@@ -549,6 +550,7 @@ require('lazy').setup({
           -- Execute a code action, usually your cursor needs to be on top of an error
           -- or a suggestion from your LSP for this to activate.
           map('gra', vim.lsp.buf.code_action, '[G]oto Code [A]ction', { 'n', 'x' })
+
 
           -- WARN: This is not Goto Definition, this is Goto Declaration.
           --  For example, in C this would take you to the header.
@@ -939,7 +941,19 @@ require('lazy').setup({
       vim.api.nvim_create_autocmd('FileType', {
         pattern = self.ft,
         group = nvim_metals_group,
-        callback = function() require('metals').initialize_or_attach(metals_config) end,
+        callback = function()
+          require('metals').initialize_or_attach(metals_config)
+
+          -- Quick import: show only import-related code actions for the symbol under cursor
+          vim.keymap.set('n', '<leader>mi', function()
+            vim.lsp.buf.code_action {
+              filter = function(action)
+                return action.title and action.title:lower():find('import') ~= nil
+              end,
+              apply = true,
+            }
+          end, { buffer = 0, desc = 'LSP: [M]etals [I]mport' })
+        end,
       })
     end,
   },

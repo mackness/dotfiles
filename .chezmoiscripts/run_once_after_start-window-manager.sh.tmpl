@@ -9,6 +9,9 @@ yabai --start-service || true
 echo "Starting skhd..."
 skhd --start-service || true
 
+echo "Starting borders..."
+brew services start borders || true
+
 echo ""
 echo "Window manager services started."
 echo "Grant Accessibility permissions in:"

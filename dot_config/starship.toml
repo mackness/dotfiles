@@ -1,8 +1,8 @@
-# Starship prompt — Tokyo Night palette
-# bg_dark=#16161e  fg=#c0caf5  fg_dark=#a9b1d6
-# blue=#7aa2f7  dark3=#545c7e  bg_highlight=#292e42
-# purple=#9d7cd8  green=#9ece6a  orange=#ff9e64
-# red=#f7768e  cyan=#7dcfff  yellow=#e0af68
+# Starship prompt — VS Code Dark palette
+# bg=#1F1F1F  fg=#D4D4D4  sidebar=#252526
+# blue=#569CD6  green=#6A9955  red=#F44747
+# orange=#CE9178  purple=#C586C0  yellow=#DCDCAA
+# cyan=#4EC9B0  grey=#808080
 
 format = """
 $directory\
@@ -13,18 +13,18 @@ $line_break\
 $character"""
 
 [directory]
-style = "bold #7aa2f7"
+style = "bold #569CD6"
 truncation_length = 3
 truncate_to_repo = true
 
 [git_branch]
 # U+E0A0 = Nerd Font git branch icon (powerline symbol)
 symbol = "\ue0a0 "
-style = "bold #9d7cd8"
+style = "bold #C586C0"
 format = "on [$symbol$branch]($style) "
 
 [git_status]
-style = "#ff9e64"
+style = "#CE9178"
 format = '([$all_status$ahead_behind]($style) )'
 ahead = "↑${count}"
 behind = "↓${count}"
@@ -36,12 +36,12 @@ deleted = "✘${count}"
 conflicted = "=${count}"
 
 [character]
-success_symbol = "[❯](bold #9ece6a)"
-error_symbol = "[❯](bold #f7768e)"
+success_symbol = "[❯](bold #6A9955)"
+error_symbol = "[❯](bold #F44747)"
 
 [cmd_duration]
 min_time = 2_000
-style = "#545c7e"
+style = "#808080"
 format = "took [$duration]($style) "
 
 [python]

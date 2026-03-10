@@ -179,9 +179,9 @@ vim.diagnostic.config {
   float = { border = 'rounded', source = 'if_many' },
   underline = { severity = vim.diagnostic.severity.ERROR },
 
-  -- Can switch between these as you prefer
-  virtual_text = true, -- Text shows up at the end of the line
-  virtual_lines = false, -- Teest shows up underneath the line, with virtual lines
+  -- Disabled in favor of tiny-inline-diagnostic.nvim
+  virtual_text = false,
+  virtual_lines = false,
 
   -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
   jump = { float = true },
@@ -217,6 +217,18 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 -- vim.keymap.set("n", "<C-S-l>", "<C-w>L", { desc = "Move window to the right" })
 -- vim.keymap.set("n", "<C-S-j>", "<C-w>J", { desc = "Move window to the lower" })
 -- vim.keymap.set("n", "<C-S-k>", "<C-w>K", { desc = "Move window to the upper" })
+
+-- Copy file path relative to git repo root to clipboard
+vim.keymap.set('n', '<leader>cp', function()
+  local root = vim.fn.systemlist('git rev-parse --show-toplevel')[1]
+  local path = vim.fn.fnamemodify(vim.fn.expand '%:p', ':s?' .. root .. '/??')
+  vim.fn.setreg('+', path)
+end, { desc = '[C]opy relative [p]ath' })
+
+-- Copy absolute file path to clipboard
+vim.keymap.set('n', '<leader>cP', function()
+  vim.fn.setreg('+', vim.fn.expand '%:p')
+end, { desc = '[C]opy absolute [P]ath' })
 
 -- [[ Basic Autocommands ]]
 --  See `:help lua-guide-autocommands`
@@ -624,6 +636,7 @@ require('lazy').setup({
       vim.list_extend(ensure_installed, {
         'lua-language-server', -- Lua Language server
         'stylua', -- Used to format Lua code
+        'prettier', -- Used to format Markdown, JS, TS, JSON, etc.
         'typos-lsp', -- Spell checking LSP (Mason name differs from lspconfig name)
         -- You can add other tools here that you want Mason to install
       })
@@ -703,6 +716,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        markdown = { 'prettier' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -805,25 +819,15 @@ require('lazy').setup({
     },
   },
 
-  { -- You can easily change to a different colorscheme.
-    -- Change the name of the colorscheme plugin below, and then
-    -- change the command in the config to whatever the name of that colorscheme is.
-    --
-    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-    'folke/tokyonight.nvim',
-    priority = 1000, -- Make sure to load this before all the other start plugins.
+  {
+    'Mofiqul/vscode.nvim',
+    priority = 1000,
     config = function()
-      ---@diagnostic disable-next-line: missing-fields
-      require('tokyonight').setup {
-        styles = {
-          comments = { italic = false }, -- Disable italics in comments
-        },
+      require('vscode').setup {
+        style = 'dark',
+        italic_comments = false,
       }
-
-      -- Load the colorscheme here.
-      -- Like many other themes, this one has different styles, and you could load
-      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-      vim.cmd.colorscheme 'tokyonight-night'
+      vim.cmd.colorscheme 'vscode'
     end,
   },
 

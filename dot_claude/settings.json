@@ -64,6 +64,18 @@
       "Bash(git rev-list:*)",
       "Bash(git cat-file:*)",
       "Bash(git name-rev:*)",
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash show:*)",
+      "Bash(git reflog:*)",
+      "Bash(git cherry:*)",
+      "Bash(git merge-base:*)",
+      "Bash(git worktree list:*)",
+      "Bash(git for-each-ref:*)",
+      "Bash(git count-objects:*)",
+      "Bash(git fsck:*)",
+      "Bash(git verify-commit:*)",
+      "Bash(git verify-tag:*)",
       "Bash(gh:*)",
       "Bash(cargo build:*)",
       "Bash(cargo check:*)",
@@ -154,18 +166,23 @@
       "Bash(port:*)",
       "Read(~/dev/**)",
       "Read(~/.claude/**)",
+      "Edit(~/dev/base/**)",
+      "Write(~/dev/base/**)",
       "WebFetch",
-      "WebSearch"
+      "WebSearch",
+      "mcp__sourcegraph__*",
+      "mcp__metals__*"
     ]
   },
-  "model": "opus",
+  "model": "claude-opus-4-6",
   "enabledPlugins": {
     "rust-analyzer-lsp@claude-plugins-official": true,
     "jdtls-lsp@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true
   },
   "skipDangerousModePermissionPrompt": true,
-  "effortLevel": "medium",
+  "effortLevel": "high",
+  "maxThinkingTokens": 128000,
   "statusLine": {
     "type": "command",
     "command": "bash /Users/msolomon1/.claude/statusline.sh"

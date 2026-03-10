@@ -42,5 +42,6 @@ yabai -m rule --add app="^FaceTime$"            manage=off
 yabai -m rule --add app="^zoom.us$"             manage=off
 yabai -m rule --add app="^Zoom$"                manage=off
 yabai -m rule --add app="^Zoom Workplace$"      manage=off
+yabai -m rule --add app="^IntelliJ IDEA" manage=off
 
 echo "yabai configuration loaded"

@@ -4,6 +4,17 @@
 -- See the kickstart.nvim README for more information
 return {
   {
+    'rachartier/tiny-inline-diagnostic.nvim',
+    event = 'LspAttach',
+    priority = 1000,
+    config = function()
+      require('tiny-inline-diagnostic').setup {
+        preset = 'modern',
+      }
+    end,
+  },
+
+  {
     'iamcco/markdown-preview.nvim',
     cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
     ft = { 'markdown' },

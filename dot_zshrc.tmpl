@@ -401,8 +401,27 @@ coding() {
   tmux switch-client -t "$name"
 }
 
+# Clear sbt-talon snapshot artifacts from the Coursier cache
+clear-talon-snapshots() {
+  local cache_dir="$HOME/Library/Caches/Coursier/v1/https/artifactory.corp.creditkarma.com/artifactory/dreamworks-snapshots/com/creditkarma/talon"
+  local dirs=("$cache_dir"/sbt-talon*/*-SNAPSHOT(N/))
+  if (( ${#dirs} == 0 )); then
+    echo "No sbt-talon snapshot artifacts found."
+    return 0
+  fi
+  echo "Found ${#dirs} snapshot artifact(s):"
+  printf '  %s\n' "${dirs[@]}"
+  echo ""
+  read -q "REPLY?Delete all? [y/N] " && echo && rm -rf "${dirs[@]}" && echo "Deleted." || echo "\nSkipped."
+}
+
 # Don't print % for partial lines (avoids % appearing at top of new tmux panes)
 unsetopt PROMPT_SP
 
 # Starship prompt
 eval "$(starship init zsh)"
+
+# Fix Ctrl+C printing raw RPROMPT instead of evaluating it
+TRAPINT() {
+  return $(( 128 + $1 ))
+}

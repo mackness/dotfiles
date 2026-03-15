@@ -30,11 +30,21 @@ brew "jenv"
 # Fonts
 cask "font-jetbrains-mono-nerd-font"
 
+# Scala/Coursier
+tap "coursier/formulas"
+brew "coursier/formulas/coursier"
+
 # Window manager
 tap "koekeishiya/formulae"
 # brew "koekeishiya/formulae/yabai"
 # brew "koekeishiya/formulae/skhd"
 EOF
+
+# Set up Coursier (Scala toolchain)
+if command -v cs &>/dev/null; then
+    echo "Running cs setup..."
+    cs setup --yes
+fi
 
 {{ else if eq .chezmoi.os "linux" -}}
 

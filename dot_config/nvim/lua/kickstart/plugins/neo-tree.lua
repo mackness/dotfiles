@@ -14,6 +14,15 @@ return {
     { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
   opts = {
+    window = {
+      width = 40,
+      mappings = {
+        ['='] = function(state)
+          local default_width = 40
+          vim.api.nvim_win_set_width(state.winid, default_width)
+        end,
+      },
+    },
     filesystem = {
       filtered_items = {
         visible = true, -- show filtered items as dimmed

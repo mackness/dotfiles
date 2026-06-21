@@ -1,0 +1,8 @@
+{{ if .isWork }}
+-- PCDL language server, built from polly/build/pcdl
+return {
+  cmd = { 'pcdl-lsp' },
+  filetypes = { 'pcdl' },
+  root_markers = { 'pcdl.toml', '.git' },
+}
+{{ end }}

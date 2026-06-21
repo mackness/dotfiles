@@ -1,0 +1,7 @@
+[data]
+    name = "{{ promptString "Git name" }}"
+    email = "{{ promptString "Git email" }}"
+    isWork = {{ promptBool "Is this a work machine" }}
+    gitCloneBase = "{{ promptStringOnce . "gitCloneBase" "Base URL for `clone` (e.g. https://host/org)" "https://github.com/mackness" }}"
+    corpDomain = "{{ promptStringOnce . "corpDomain" "Corporate domain for internal hosts (blank if none)" "example.com" }}"
+    talonCacheDir = "{{ promptStringOnce . "talonCacheDir" "Coursier cache subpath for talon snapshots (after .../https/)" "artifactory.example.com/artifactory/snapshots/com/example" }}"

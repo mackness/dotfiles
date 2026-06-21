@@ -1,0 +1,66 @@
+# Starship prompt — VS Code Dark palette
+# bg=#1F1F1F  fg=#D4D4D4  sidebar=#252526
+# blue=#569CD6  green=#6A9955  red=#F44747
+# orange=#CE9178  purple=#C586C0  yellow=#DCDCAA
+# cyan=#4EC9B0  grey=#808080
+
+format = """
+$directory\
+$git_branch\
+$git_status\
+$cmd_duration\
+$line_break\
+$character"""
+
+[directory]
+style = "bold #569CD6"
+truncation_length = 3
+truncate_to_repo = true
+
+[git_branch]
+# U+E0A0 = Nerd Font git branch icon (powerline symbol)
+symbol = "\ue0a0 "
+style = "bold #C586C0"
+format = "on [$symbol$branch]($style) "
+
+[git_status]
+style = "#CE9178"
+format = '([$all_status$ahead_behind]($style) )'
+ahead = "↑${count}"
+behind = "↓${count}"
+diverged = "↑${ahead_count}↓${behind_count}"
+modified = "~${count}"
+staged = "+${count}"
+untracked = "?${count}"
+deleted = "✘${count}"
+conflicted = "=${count}"
+
+[character]
+success_symbol = "[❯](bold #B5CEA8)"
+error_symbol = "[❯](bold #F44747)"
+
+[cmd_duration]
+min_time = 2_000
+style = "#808080"
+format = "took [$duration]($style) "
+
+[python]
+disabled = true
+
+[scala]
+disabled = true
+
+[java]
+disabled = true
+
+[nodejs]
+disabled = true
+
+[rust]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[package]
+disabled = true

@@ -1,0 +1,25 @@
+# sesh — shared config (chezmoi-managed; uses ~ for cross-machine/username portability)
+# Machine-specific pins live in local.toml (NOT chezmoi-managed):
+import = ["~/.config/sesh/local.toml"]
+
+# Show <parent>/<dir> in session names so worktrees read as <repo>/<branch>
+# (e.g. fwk_talon-scala-pig/master) instead of just <branch>.
+dir_length = 2
+
+[default_session]
+# Layout: nvim (top ~60%) + cc (bottom ~40%) in one window.
+# Uses the full claude command, NOT the `cc` alias — startup runs in a
+# non-interactive shell where .zshrc aliases don't exist.
+startup_command = "tmux split-window -v -l 40% -d 'claude --dangerously-skip-permissions'; nvim ."
+
+# Cross-machine pins -----------------------------------------------------------
+[[session]]
+name = "Dotfiles"
+path = "~/.local/share/chezmoi"
+
+[[session]]
+name = "base"
+path = "~/dev/base"
+
+[[wildcard]]
+pattern = "~/dev/*"

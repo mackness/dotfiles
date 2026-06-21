@@ -1,0 +1,2 @@
+# Machine-specific sesh pins — each machine keeps its own (never synced).
+.config/sesh/local.toml

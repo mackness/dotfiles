@@ -1,0 +1,34 @@
+#!/bin/bash
+set -euo pipefail
+
+# This script re-runs whenever .tmux.conf changes
+# {{ include "dot_tmux.conf" | sha256sum }}
+
+# Install TPM if missing
+if [ ! -d "$HOME/.tmux/plugins/tpm" ]; then
+    echo "Installing TPM..."
+    git clone https://github.com/tmux-plugins/tpm "$HOME/.tmux/plugins/tpm"
+fi
+
+# Set TMUX_PLUGIN_MANAGER_PATH so TPM can find the plugin directory
+# (TPM normally sets this when tmux loads, but it may not be set yet on a fresh install)
+tmux set-environment -g TMUX_PLUGIN_MANAGER_PATH "$HOME/.tmux/plugins/" 2>/dev/null || true
+
+# Install/update tmux plugins via TPM
+if [ -x "$HOME/.tmux/plugins/tpm/bin/install_plugins" ]; then
+    echo "Installing tmux plugins..."
+    "$HOME/.tmux/plugins/tpm/bin/install_plugins"
+fi
+
+# Ensure sesh's machine-specific import exists. sesh.toml does
+# `import = ["~/.config/sesh/local.toml"]`, and a missing file makes
+# `sesh picker` error and the prefix+T popup close instantly. This file is
+# intentionally NOT chezmoi-managed (per-machine pins), so just stub it here.
+if [ ! -f "$HOME/.config/sesh/local.toml" ]; then
+    echo "Creating sesh local.toml stub..."
+    mkdir -p "$HOME/.config/sesh"
+    cat > "$HOME/.config/sesh/local.toml" <<'EOF'
+# sesh — machine-specific pins (NOT chezmoi-managed; per-machine).
+# Imported by sesh.toml. Add [[session]] blocks for paths unique to this machine.
+EOF
+fi

@@ -1,0 +1,106 @@
+" =============================================================================
+" Basic Vim Settings
+" =============================================================================
+
+" Set 'nocompatible' to disable compatibility with vi.
+" This enables many modern Vim features.
+set nocompatible
+
+" Enable syntax highlighting. This is a must for code.
+syntax on
+
+" Turn on filetype detection and enable filetype-specific plugins and indenting.
+filetype plugin indent on
+
+" =============================================================================
+" Appearance and Usability
+" =============================================================================
+
+" Set a color scheme. You can download and install new ones.
+" You can try other built-in schemes like 'default', 'darkblue', 'desert', etc.
+" colorscheme desert
+
+" Show line numbers on the left.
+set number
+
+" Show relative line numbers. This is a game-changer for navigation.
+" To move 10 lines down, you just type `10j` instead of counting.
+" set relativenumber
+
+" Combine both absolute and relative line numbers.
+" This shows the absolute number on the current line and relative for others.
+set number relativenumber
+
+" Highlight the current line to make it easy to see where your cursor is.
+set cursorline
+
+" =============================================================================
+" Indentation and Tabs
+" =============================================================================
+
+" Use spaces instead of tabs.
+" This is a common preference and helps maintain consistent code style.
+set expandtab
+
+" The number of spaces a tab character counts for.
+set tabstop=4
+
+" The number of spaces to use for each step of (auto)indent.
+set shiftwidth=4
+
+" When editing, pressing Tab will insert spaces (as defined by tabstop/shiftwidth).
+set softtabstop=4
+
+" Use intelligent auto-indentation.
+set smartindent
+
+" =============================================================================
+" Searching and Highlighting
+" =============================================================================
+
+" Highlight all search matches as you type.
+set incsearch
+
+" Turn on search highlighting.
+set hlsearch
+
+" Ignore case in search patterns.
+set ignorecase
+
+" When a search pattern contains an uppercase character, switch to case-sensitive searching.
+set smartcase
+
+" =============================================================================
+" Buffers and Files
+" =============================================================================
+
+" Don't save a backup file by default. This is often unnecessary with version control.
+set nobackup
+
+" Keep the undo history for later sessions.
+set undofile
+
+" Hide unsaved buffers when switching to a different one.
+set hidden
+
+" =============================================================================
+" Command Line and Status Line
+" =============================================================================
+
+" Show the command you are typing in the bottom right.
+set showcmd
+
+" Always show the status line at the bottom.
+" This is useful for plugins like Airline or Lightline.
+set laststatus=2
+
+" =============================================================================
+" MOUSE
+" =============================================================================
+
+" Enable mouse support in all modes.
+" This can be helpful for beginners but many advanced users disable it.
+set mouse=a
+
+set clipboard=unnamed
+

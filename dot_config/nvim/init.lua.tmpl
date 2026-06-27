@@ -119,6 +119,10 @@ vim.filetype.add {
   extension = {
     polly = 'pcdl',
   },
+  -- Highlight chezmoi templates by their underlying filetype, e.g. init.lua.tmpl -> lua
+  pattern = {
+    ['.*%.lua%.tmpl'] = 'lua',
+  },
 }
 
 -- [[ Setting options ]]
@@ -314,7 +318,8 @@ require('lazy').setup({
     'linrongbin16/gitlinker.nvim',
     cmd = 'GitLink',
     keys = {
-      { '<leader>cg', '<cmd>GitLink<cr>', desc = 'Copy git link' },
+      { '<leader>cg', '<cmd>GitLink<cr>', mode = { 'n', 'v' }, desc = 'Copy git link' },
+      { '<leader>cG', '<cmd>GitLink!<cr>', mode = { 'n', 'v' }, desc = 'Open git link in browser' },
     },
     opts = {
       router = {
@@ -605,6 +610,16 @@ require('lazy').setup({
       vim.api.nvim_create_autocmd('LspAttach', {
         group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
         callback = function(event)
+          -- Don't run a language server on chezmoi templates: the template
+          -- delimiter syntax isn't valid in the underlying language, so the LSP
+          -- floods diagnostics.
+          if vim.api.nvim_buf_get_name(event.buf):match '%.tmpl$' then
+            vim.schedule(function()
+              vim.lsp.buf_detach_client(event.buf, event.data.client_id)
+            end)
+            return
+          end
+
           -- NOTE: Remember that Lua is a real programming language, and as such it is possible
           -- to define small helper and utility functions so you don't have to repeat yourself.
           --
